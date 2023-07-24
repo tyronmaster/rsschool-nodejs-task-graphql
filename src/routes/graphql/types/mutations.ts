@@ -2,8 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { FastifyInstance } from "fastify";
-import { GraphQLList, GraphQLObjectType, GraphQLFloat, GraphQLString, GraphQLInt, GraphQLBoolean, GraphQLEnumType, GraphQLInputObjectType, GraphQLNonNull, GraphQLNullableType } from "graphql";
+import { GraphQLObjectType, GraphQLFloat, GraphQLString, GraphQLInt, GraphQLBoolean, GraphQLEnumType, GraphQLInputObjectType, GraphQLNonNull, GraphQLNullableType } from "graphql";
 import { UUIDType } from "../types/uuid.js";
 import { enumMemberId, posts, profiles, user } from "./queries.js";
 

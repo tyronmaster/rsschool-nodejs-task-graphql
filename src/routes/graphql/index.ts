@@ -6,7 +6,6 @@ import { gqlMutationTypes } from './types/mutations.js';
 import { gqlQueryTypes } from './types/queries.js';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
-  const { prisma, httpErrors } = fastify;
 
   fastify.route({
     url: '/',
