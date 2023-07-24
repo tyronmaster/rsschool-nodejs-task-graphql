@@ -1,7 +1,9 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { createGqlResponseSchema, gqlResponseSchema, gqlSchema } from './schemas.js';
-import { graphql, validate, parse } from 'graphql';
+import { createGqlResponseSchema, gqlResponseSchema } from './schemas.js';
+import { graphql, validate, parse, GraphQLSchema } from 'graphql';
 import depthLimit from 'graphql-depth-limit';
+import { gqlMutationTypes } from './types/mutations.js';
+import { gqlQueryTypes } from './types/queries.js';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
   const { prisma, httpErrors } = fastify;
@@ -15,19 +17,25 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
         200: gqlResponseSchema,
       },
     },
-    async handler(req) {
-      const errors =
-        validate(gqlSchema, parse(String(req.body.query)),
-          [depthLimit(5)]);
+    async handler(req, reply) {
+      const { query, variables } = req.body
+      const gqlSchema = new GraphQLSchema({
+        query: gqlQueryTypes,
+        mutation: gqlMutationTypes
+      })
+
+      const errors = validate(gqlSchema, parse(String(query)), [depthLimit(5)])
       if (errors.length > 0) {
+        await reply.send({ data: null, errors: errors });
         return;
       }
+
       return await graphql({
         schema: gqlSchema,
-        source: String(req.body.query),
+        source: String(query),
         contextValue: fastify,
-        variableValues: req.body.variables,
-      });
+        variableValues: variables,
+      })
     },
   });
 
